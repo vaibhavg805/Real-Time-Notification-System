@@ -25,7 +25,7 @@ import com.personal.RealTimeNotification.redis.channel.RedisChannels;
 import com.personal.RealTimeNotification.redis.event.EmailEvent;
 import com.personal.RealTimeNotification.redis.event.EventPayload;
 import com.personal.RealTimeNotification.redis.pub.interf.RedisPublisher;
-import com.personal.RealTimeNotification.redis.service.RedisQueueService;
+//import com.personal.RealTimeNotification.redis.service.RedisQueueService;
 import com.personal.RealTimeNotification.repository.NotificationRepository;
 import com.personal.RealTimeNotification.repository.UserRepository;
 import com.personal.RealTimeNotification.service.NotificationService;
@@ -43,23 +43,22 @@ public class NotificationServiceImpl implements NotificationService {
 	private NotificationRepository notificationRepository;
 	private RedisPublisher redisPublisher;
 	//private final BlockingQueue<NotificationDto> queue;
-	private final RedisQueueService redisQueueService;
+	//private final RedisQueueService redisQueueService;
     // private EmailService emailService;
 	 private UndoService undoService;
 	public NotificationServiceImpl(UserRepository userRepository,NotificationMapper notificationMapper,
 									NotificationRepository notificationRepository,
 									RedisPublisher redisPublisher,
-									 BlockingQueue<NotificationDto> queue,
-									 EmailService emailService,
-									 RedisQueueService redisQueueService,
+									// BlockingQueue<NotificationDto> queue,
+									// EmailService emailService,
+									// RedisQueueService redisQueueService,
 									 UndoService undoService) {
 		this.userRepository=userRepository;
 		this.notificationMapper=notificationMapper;
 		this.notificationRepository=notificationRepository;
-		this.redisPublisher=redisPublisher;
-		//this.queue = queue;
+		this.redisPublisher=redisPublisher;//this.queue = queue;
 	//	this.emailService=emailService;
-		this.redisQueueService=redisQueueService;
+	//	this.redisQueueService=redisQueueService;
 		this.undoService=undoService;
 	}
 
@@ -82,8 +81,9 @@ public class NotificationServiceImpl implements NotificationService {
 	   // queue.offer(dto); //  Push into BlockingQueue for background save
 		
 		dto.setId(null);
-		dto.setUserId(userId); // yaha mene manually set kardi this is a fix 
-		redisQueueService.pushInQueue(dto); // ham yaha  redis use karnenge 
+		dto.setUserId(userId); // yaha mene manually set kardi this is a fix
+		redisPublisher.publish(RedisChannels.NOTIFICATION_CHANNEL, dto);
+	//	redisQueueService.pushInQueue(dto); // ham yaha  redis use karnenge
 		
 	    LOGGER.info("Notification added to processing queue: {}", dto);
 		//return notificationMapper.convertEntityToNotificationDto(notification);
