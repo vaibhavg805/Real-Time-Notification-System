@@ -2,6 +2,7 @@ package com.personal.RealTimeNotification.redis.ratelimiter;
 
 import java.util.Arrays;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import com.personal.RealTimeNotification.security.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 @Component
+@Slf4j
 public class RateLimitInterceptor implements HandlerInterceptor {
 	 
 	private static final String BUCKET_KEY = "token_bucket:";
@@ -30,7 +32,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 	 @Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		 
+		 	log.info("Inside Interceptor....");
 	        String ip = request.getRemoteAddr();
 	        String uri = request.getRequestURI();
 
@@ -53,20 +55,23 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 	                                       .anyMatch(uri::startsWith);
 
 	        if (userId != null) {
-	            if (!redisRateLimiter.allowRequest(userKey, true)) {  
+	            if (!redisRateLimiter.allowRequest(userKey, true)) {
+					log.info("Inside User Interceptor....");
 	                response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
 	                response.getWriter().write("User rate limit exceeded. Try again later.");
 	                return false;
 	            }
 	        }else {
 	        	 if (isProtectedApi) {
-	 	            if (!redisRateLimiter.allowRequest(apiKey, true)) {  
+	 	            if (!redisRateLimiter.allowRequest(apiKey, true)) {
+						log.info("Inside API Interceptor....");
 	 	                response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
 	 	                response.getWriter().write("API rate limit exceeded. Try again later.");
 	 	                return false;
 	 	            }
 	 	        } else {
-	 	            if (!redisRateLimiter.allowRequest(globalKey, false)) {  
+	 	            if (!redisRateLimiter.allowRequest(globalKey, false)) {
+						log.info("Inside Global Interceptor....");
 	 	                response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
 	 	                response.getWriter().write("Global rate limit exceeded. Try again later.");
 	 	                return false;

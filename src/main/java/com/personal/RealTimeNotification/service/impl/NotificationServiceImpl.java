@@ -75,6 +75,7 @@ public class NotificationServiceImpl implements NotificationService {
 		notification.setUser(user);
 		notification.setStatus(NotificationStatus.UNREAD);
 		notification.setCreatedAt(Instant.now());
+		notification.setTitle(notification.getTitle());
 		
 		//	notification = notificationRepository.save(notification);
 		 // Instead of saving directly to DB
@@ -88,7 +89,7 @@ public class NotificationServiceImpl implements NotificationService {
 	    LOGGER.info("Notification added to processing queue: {}", dto);
 		//return notificationMapper.convertEntityToNotificationDto(notification);
 	    
-	    return new ProcessingResponseDto<>(true, "Notification request received and queued for processing");
+	    return new ProcessingResponseDto<>(true, "Notification request received for processing");
 	}
 
 	@Override

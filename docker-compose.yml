@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    ports:
+      - "9099:9099"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      JWT_SECRET: secret123
+      SPRING_MYSQL_USERNAME: root
+      SPRING_MYSQL_PASSWORD: root
+      SPRING_MAIL_PASSWORD: yourapppassword
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: NotificationSystem
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"

@@ -47,6 +47,7 @@ public class RedisSubscriber implements MessageListener {
 			notification.setMessage(notificationDto.getMessage());
 			notification.setStatus(NotificationStatus.UNREAD);
 			notification.setCreatedAt(Instant.now());
+			notification.setTitle(notificationDto.getTitle());
 
 			// need user as well (fetch by ID)
 			User user = userRepository.findById(notificationDto.getUserId())

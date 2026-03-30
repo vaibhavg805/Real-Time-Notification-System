@@ -18,7 +18,7 @@ public class RateLimitConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(rateLimitInterceptor)
-						.addPathPatterns("/notification/**","/admin/**","/user/**")
+						.addPathPatterns("/notifications/**","/admin/**","/user/**")
 						.excludePathPatterns("/auth/**");
 	}
 }
